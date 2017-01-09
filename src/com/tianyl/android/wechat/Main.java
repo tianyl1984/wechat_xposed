@@ -74,29 +74,46 @@ public class Main implements IXposedHookLoadPackage{
 //		XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.bbom.j", lp.classLoader, "a","com.tencent.mm.booter.NotifyReceiver.a", Integer.TYPE,Integer.TYPE,String.class, hooker);
 //		XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.bbom.j", lp.classLoader, "b", Integer.TYPE,new byte[]{}.getClass(),new byte[]{}.getClass(), hooker);
 //		XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.bbom.j", lp.classLoader, "c", Integer.TYPE,new byte[]{}.getClass(),new byte[]{}.getClass(), hooker);
-		XposedHelpers.findAndHookMethod("com.tencent.mmdb.database.SQLiteSession", lp.classLoader, "executeForLastInsertedRowId",String.class,new Object[]{}.getClass(),Integer.TYPE,"com.tencent.mmdb.support.CancellationSignal", new XC_MethodHook(){
-			
-			@Override
-			protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-				XposedBridge.log("----------------start-----------------");
-				Object sqlObj = param.args[0];
-				Object[] objs = (Object[])param.args[1];
-				if(sqlObj == null || objs == null){
-					XposedBridge.log("insert参数为空");
-					return;
-				}
-				String sql = sqlObj.toString();
-				XposedBridge.log("execute sql:" + sql);
-				int index = 0;
-				for(Object obj:objs){
-					XposedBridge.log("args[" + index + "]:" + WechatUtil.getType(obj));
-					XposedBridge.log("args[" + index + "]:" + WechatUtil.getStr(obj));
-					index++;
-				}
-				XposedBridge.log("-----------------end------------------");
-			}
-			
-		});
+//		XposedHelpers.findAndHookMethod("com.tencent.mmdb.database.SQLiteSession", lp.classLoader, "executeForLastInsertedRowId",String.class,new Object[]{}.getClass(),Integer.TYPE,"com.tencent.mmdb.support.CancellationSignal", new XC_MethodHook(){
+//			@Override
+//			protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+//				XposedBridge.log("----------------start-----------------");
+//				Object sqlObj = param.args[0];
+//				Object[] objs = (Object[])param.args[1];
+//				if(sqlObj == null || objs == null){
+//					XposedBridge.log("insert参数为空");
+//					return;
+//				}
+//				String sql = sqlObj.toString();
+//				XposedBridge.log("execute sql:" + sql);
+//				int index = 0;
+//				for(Object obj:objs){
+//					XposedBridge.log("args[" + index + "]:" + WechatUtil.getType(obj));
+//					XposedBridge.log("args[" + index + "]:" + WechatUtil.getStr(obj));
+//					index++;
+//				}
+//				XposedBridge.log("-----------------end------------------");
+//			}
+//		});
+		
+		String className = "com.tencent.mmdb.database.SQLiteSession";
+		SqlExecuteHooker hooker = new SqlExecuteHooker();
+		XposedHelpers.findAndHookMethod("com.tencent.mmdb.database.SQLiteSession", lp.classLoader, "execute",
+				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
+		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForChangedRowCount",
+				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
+		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForCursorWindow",
+				String.class, Object[].class, Integer.TYPE, Integer.TYPE, Integer.TYPE, "com.tencent.mm.m.a.b", "com.tencent.mm.m.a.c", hooker);
+		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForCursorWindow",
+				String.class, Object[].class, "com.tencent.mmdb.CursorWindow", Integer.TYPE, Integer.TYPE, Boolean.TYPE, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal",
+				hooker);
+		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForLastInsertedRowId",
+				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
+		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForLong",
+				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
+		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForString",
+				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
+		
 		
 //		XposedHelpers.findAndHookMethod("com.tencent.mm.sdk.modelmsg.WXTextObject", lp.classLoader, "checkArgs", new XC_MethodHook() {
 //			@Override
