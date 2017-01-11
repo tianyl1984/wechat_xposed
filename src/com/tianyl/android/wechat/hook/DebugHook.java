@@ -1,11 +1,13 @@
-package com.tianyl.android.wechat;
+package com.tianyl.android.wechat.hook;
 
 import java.lang.reflect.Member;
+
+import com.tianyl.android.wechat.util.WechatUtil;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 
-public class DebugHooker extends XC_MethodHook{
+public class DebugHook extends XC_MethodHook{
 
 	@Override
 	protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

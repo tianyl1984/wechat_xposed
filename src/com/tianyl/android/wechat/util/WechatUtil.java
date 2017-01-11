@@ -1,4 +1,4 @@
-package com.tianyl.android.wechat;
+package com.tianyl.android.wechat.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
