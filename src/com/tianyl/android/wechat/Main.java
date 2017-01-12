@@ -4,15 +4,10 @@ import java.io.File;
 import java.lang.reflect.Method;
 
 import com.tianyl.android.wechat.hook.MessageInsertHook;
-import com.tianyl.android.wechat.hook.SqlExecuteHook;
 import com.tianyl.android.wechat.util.WechatUtil;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import dalvik.system.PathClassLoader;
 import de.robv.android.xposed.IXposedHookLoadPackage;
-import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;

@@ -37,18 +37,29 @@ public class MessageInsertHook extends XC_MethodHook{
 			XposedBridge.log("参数为空");
 			return;
 		}
+		StringBuffer sb = new StringBuffer();
+		String semiXML = null;
+		int index = 0;
 		for(Object obj:objs){
 			String val = WechatUtil.getStr(obj);
+			sb.append("args[" + index + "]:" + WechatUtil.getType(obj));
+			sb.append("args[" + index + "]:" + val);
+			index++;
 			if(val.startsWith("~SEMI_XML~")){
-				@SuppressWarnings("unchecked")
-				Map<String, String> contentMap = (Map<String, String>)XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.sdk.platformtools.au",loadPackageParam.classLoader), "Ks", val);
-				if(contentMap != null){
-					JSONObject json = new JSONObject(contentMap);
-					String jsonStr = json.toString();
-					FileUtil.saveStringToFile(jsonStr, new File(FileUtil.getBathPath() + "json/" + UUID.randomUUID().toString() + ".json"));
-				}else{
-					XposedBridge.log("content map is null");
-				}
+				semiXML = val;
+			}
+		}
+		if(semiXML != null){
+			@SuppressWarnings("unchecked")
+			Map<String, String> contentMap = (Map<String, String>)XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.sdk.platformtools.au",loadPackageParam.classLoader), "Ks", semiXML);
+			if(contentMap != null){
+				JSONObject json = new JSONObject(contentMap);
+				String jsonStr = json.toString();
+				String uuid = UUID.randomUUID().toString();
+				FileUtil.saveStringToFile(jsonStr, new File(FileUtil.getBathPath() + "json/" + uuid + ".json"));
+				FileUtil.saveStringToFile(sb.toString(), new File(FileUtil.getBathPath() + "json/" + uuid + ".txt"));
+			}else{
+				XposedBridge.log("content map is null");
 			}
 		}
 	}
