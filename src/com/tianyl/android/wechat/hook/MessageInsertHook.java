@@ -42,8 +42,9 @@ public class MessageInsertHook extends XC_MethodHook{
 		int index = 0;
 		for(Object obj:objs){
 			String val = WechatUtil.getStr(obj);
-			sb.append("args[" + index + "]:" + WechatUtil.getType(obj));
-			sb.append("args[" + index + "]:" + val);
+			sb.append("sql:" + sqlObj.toString()+"\r\n");
+			sb.append("args[" + index + "]:" + WechatUtil.getType(obj)+"\r\n");
+			sb.append("args[" + index + "]:" + val + "\r\n");
 			index++;
 			if(val.startsWith("~SEMI_XML~")){
 				semiXML = val;
