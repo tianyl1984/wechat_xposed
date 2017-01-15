@@ -7,11 +7,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.tianyl.android.wechat.util.FileUtil;
 import com.tianyl.android.wechat.util.LogUtil;
 import com.tianyl.android.wechat.util.NetUtil;
+import com.tianyl.android.wechat.util.StringUtil;
 
 public class UploadService {
 
@@ -23,10 +25,10 @@ public class UploadService {
 		List<File> jsonFiles = findJsonFiles();
 		for (File file : jsonFiles) {
 			String jsonStr = FileUtil.read(file);
-			AppMsg msg = null;
+			List<AppMsg> msgs = null;
 			try {
 				JSONObject json = JSONObject.parseObject(jsonStr);
-				msg = buildMsg(json);
+				msgs = buildMsg(json);
 			} catch (JSONException e) {
 				e.printStackTrace();
 				// 记录日志，删除文件
@@ -34,28 +36,16 @@ public class UploadService {
 				deleteFile(file);
 				continue;
 			}
-			if (msg.getType().equals("6")) {// 收到文件
-				deleteFile(file);
-				continue;
-			}
-			if (msg.getPublisherUsername() == null || msg.getPublisherUsername().equals("")) {// 聊天中的，insert时想办法不记录
-				deleteFile(file);
-				continue;
-			}
-			if (msg.getPublisherUsername().equals("exmail_tool")) {// 邮件，insert时想办法不记录
-				deleteFile(file);
-				continue;
-			}
-			boolean sendFlag = sendToServer(msg);
+			boolean sendFlag = sendToServer(msgs);
 			if (sendFlag) {
 				deleteFile(file);
 			}
 		}
 	}
 
-	private static boolean sendToServer(AppMsg msg) {
-		String url = "";
-		String result = NetUtil.post(url, JSONObject.toJSONString(msg));
+	private static boolean sendToServer(List<AppMsg> msgs) {
+		String url = "https://tianice.51vip.biz/api/wx/article/save";
+		String result = NetUtil.post(url, JSONArray.toJSONString(msgs));
 		try {
 			JSONObject json = JSONObject.parseObject(result);
 			return json.getBooleanValue("result");
@@ -66,10 +56,13 @@ public class UploadService {
 	}
 
 	private static void deleteFile(File file) {
-
+        if(file.exists()){
+            file.delete();
+        }
 	}
 
-	private static AppMsg buildMsg(JSONObject json) throws JSONException {
+	private static List<AppMsg> buildMsg(JSONObject json) throws JSONException {
+		List<AppMsg> result = new ArrayList<>();
 		AppMsg msg = new AppMsg();
 		msg.setAppName(json.getString(".msg.appinfo.appname"));
 		msg.setTitle(json.getString(".msg.appmsg.title"));
@@ -78,7 +71,34 @@ public class UploadService {
 		msg.setPublishTime(getTime(json.getLongValue(".msg.appmsg.mmreader.category.item.pub_time")));
 		msg.setType(json.getString(".msg.appmsg.type"));
 		msg.setUrl(json.getString(".msg.appmsg.url"));
-		return msg;
+
+		if (msg.getType().equals("6")) {// 收到文件
+			return result;
+		}
+		if (msg.getPublisherUsername() == null || msg.getPublisherUsername().equals("")) {// 聊天中的，insert时想办法不记录
+			return result;
+		}
+		if (msg.getPublisherUsername().equals("exmail_tool")) {// 邮件，insert时想办法不记录
+			return result;
+		}
+
+
+		result.add(msg);
+		for (int i=1;i<3;i++){
+			String url = json.getString(".msg.appmsg.mmreader.category.item" + i + ".url");
+			if(StringUtil.isNotBlank(url)){
+				AppMsg msgTemp = new AppMsg();
+				msgTemp.setAppName(json.getString(".msg.appinfo.appname"));
+				msgTemp.setTitle(json.getString(".msg.appmsg.mmreader.category.item" + i + ".title"));
+				msgTemp.setDigest(json.getString(".msg.appmsg.mmreader.category.item" + i + ".digest"));
+				msgTemp.setPublisherUsername(json.getString(".msg.appmsg.mmreader.publisher.username"));
+				msgTemp.setPublishTime(getTime(json.getLongValue(".msg.appmsg.mmreader.category.item" + i + ".pub_time")));
+				msgTemp.setType(json.getString(".msg.appmsg.type"));
+				msgTemp.setUrl(url);
+				result.add(msgTemp);
+			}
+		}
+		return result;
 	}
 
 	private static String getTime(long time) {

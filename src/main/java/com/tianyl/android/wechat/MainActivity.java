@@ -5,6 +5,7 @@ import com.tianyl.android.wechat.sync.UploadService;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 public class MainActivity extends Activity{
 
@@ -15,8 +16,14 @@ public class MainActivity extends Activity{
 		findViewById(R.id.btnUpload).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				UploadService.update();
-			}
+                Toast.makeText(MainActivity.this,"start...",Toast.LENGTH_LONG).show();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        UploadService.update();
+                    }
+                }).start();
+            }
 		});
 	}
 	
