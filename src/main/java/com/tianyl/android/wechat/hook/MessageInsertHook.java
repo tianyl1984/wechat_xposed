@@ -58,7 +58,9 @@ public class MessageInsertHook extends XC_MethodHook{
 				String jsonStr = json.toString();
 				String uuid = UUID.randomUUID().toString();
 				FileUtil.saveStringToFile(jsonStr, new File(FileUtil.getBathPath() + "json/" + uuid + ".json"));
-				FileUtil.saveStringToFile(sb.toString(), new File(FileUtil.getBathPath() + "json/" + uuid + ".txt"));
+
+				FileUtil.saveStringToFile(jsonStr, new File(FileUtil.getBathPath() + "json-bak/" + uuid + ".json"));
+				FileUtil.saveStringToFile(sb.toString(), new File(FileUtil.getBathPath() + "json-bak/" + uuid + ".txt"));
 			}else{
 				XposedBridge.log("content map is null");
 			}
