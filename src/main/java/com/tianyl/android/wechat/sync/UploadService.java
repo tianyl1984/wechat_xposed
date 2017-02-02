@@ -3,9 +3,12 @@ package com.tianyl.android.wechat.sync;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
@@ -20,6 +23,14 @@ public class UploadService {
 	public static void main(String[] args) {
 		update();
 	}
+
+	private static final Set<String> IGNORE_PUBLISHER_USERNAMES = new HashSet<>();
+
+    static {
+        IGNORE_PUBLISHER_USERNAMES.addAll(Arrays.asList("gh_4e3ae6589322",
+                "cmbchina-95555","gh_98a49c9dbbc0","gh_ccb9eb7900f6","gh_302f6e40c75f","gh_a19f4d5e89e5",
+                "wxzhifu","mphelper"));
+    }
 
 	public static void update() {
 		List<File> jsonFiles = findJsonFiles();
@@ -44,6 +55,9 @@ public class UploadService {
 	}
 
 	private static boolean sendToServer(List<AppMsg> msgs) {
+        if (msgs == null || msgs.size() == 0){
+            return true;
+        }
 		String url = "https://tianice.51vip.biz/api/wx/article/save";
 		String result = NetUtil.post(url, JSONArray.toJSONString(msgs));
 		try {
@@ -82,8 +96,9 @@ public class UploadService {
 			return result;
 		}
 
-
-		result.add(msg);
+        if (!IGNORE_PUBLISHER_USERNAMES.contains(msg.getPublisherUsername())) {
+            result.add(msg);
+        }
 		for (int i=1;i<3;i++){
 			String url = json.getString(".msg.appmsg.mmreader.category.item" + i + ".url");
 			if(StringUtil.isNotBlank(url)){
@@ -95,7 +110,9 @@ public class UploadService {
 				msgTemp.setPublishTime(getTime(json.getLongValue(".msg.appmsg.mmreader.category.item" + i + ".pub_time")));
 				msgTemp.setType(json.getString(".msg.appmsg.type"));
 				msgTemp.setUrl(url);
-				result.add(msgTemp);
+                if (!IGNORE_PUBLISHER_USERNAMES.contains(msgTemp.getPublisherUsername())){
+                    result.add(msgTemp);
+                }
 			}
 		}
 		return result;

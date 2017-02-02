@@ -52,15 +52,15 @@ public class MessageInsertHook extends XC_MethodHook{
 		}
 		if(semiXML != null){
 			@SuppressWarnings("unchecked")
-			Map<String, String> contentMap = (Map<String, String>)XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.sdk.platformtools.au",loadPackageParam.classLoader), "Ks", semiXML);
+			Map<String, String> contentMap = (Map<String, String>)XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.sdk.platformtools.av",loadPackageParam.classLoader), "La", semiXML);
 			if(contentMap != null){
 				JSONObject json = new JSONObject(contentMap);
 				String jsonStr = json.toString();
 				String uuid = UUID.randomUUID().toString();
 				FileUtil.saveStringToFile(jsonStr, new File(FileUtil.getBathPath() + "json/" + uuid + ".json"));
 
-				FileUtil.saveStringToFile(jsonStr, new File(FileUtil.getBathPath() + "json-bak/" + uuid + ".json"));
-				FileUtil.saveStringToFile(sb.toString(), new File(FileUtil.getBathPath() + "json-bak/" + uuid + ".txt"));
+				//FileUtil.saveStringToFile(jsonStr, new File(FileUtil.getBathPath() + "json-bak/" + uuid + ".json"));
+				//FileUtil.saveStringToFile(sb.toString(), new File(FileUtil.getBathPath() + "json-bak/" + uuid + ".txt"));
 			}else{
 				XposedBridge.log("content map is null");
 			}
