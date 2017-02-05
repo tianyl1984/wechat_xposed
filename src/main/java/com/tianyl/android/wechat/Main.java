@@ -1,5 +1,6 @@
 package com.tianyl.android.wechat;
 
+import com.tianyl.android.wechat.hook.MessageDeleteHook;
 import com.tianyl.android.wechat.hook.MessageInsertHook;
 import com.tianyl.android.wechat.hook.SqlExecuteHook;
 import com.tianyl.android.wechat.util.WechatUtil;
@@ -24,8 +25,8 @@ public class Main implements IXposedHookLoadPackage{
 		if(!pkgName.equals(WechatPackageName)){
 			return;
 		}
-		handleFromJar(lpparam);
-//		handle(lpparam);
+//		handleFromJar(lpparam);
+		handle(lpparam);
 	}
 
 	public void handleFromJar(LoadPackageParam lpparam)throws Throwable {
@@ -46,10 +47,16 @@ public class Main implements IXposedHookLoadPackage{
 
 	public void handle(XC_LoadPackage.LoadPackageParam lp){
 		XposedBridge.log("打开微信...:" + WechatUtil.getTime());
-		
+
+        //添加消息
 		String className = "com.tencent.mmdb.database.SQLiteSession";
 		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForLastInsertedRowId",
-				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", new MessageInsertHook(lp));
+				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal",
+                new MessageInsertHook(lp));
+        //删除消息
+        XposedHelpers.findAndHookMethod(className,lp.classLoader,"executeForChangedRowCount",
+                String.class,Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal",
+                new MessageDeleteHook(lp));
 	}
 
     public void debug(XC_LoadPackage.LoadPackageParam lp){
