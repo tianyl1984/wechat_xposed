@@ -38,22 +38,11 @@ public class SqlExecuteHook extends XC_MethodHook{
 				XposedBridge.log("args[" + index + "]:" + WechatUtil.getType(obj));
 				String val = WechatUtil.getStr(obj);
 				XposedBridge.log("args[" + index + "]:" + val);
-				if(val.startsWith("~SEMI_XML~")){
-					@SuppressWarnings("unchecked")
-					Map<String, String> contentMap = (Map<String, String>)XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.sdk.platformtools.au",loadPackageParam.classLoader), "Ks", val);
-					if(contentMap != null){
-						for(String key:contentMap.keySet()){
-							XposedBridge.log(key + ":" + contentMap.get(key));
-						}
-					}else{
-						XposedBridge.log("content map is null");
-					}
-				}
 				index++;
 			}
 		}
-		XposedBridge.log("---------------stack------------------");
-		XposedBridge.log(new Exception());
+//		XposedBridge.log("---------------stack------------------");
+//		XposedBridge.log(new Exception());
 		XposedBridge.log("-----------------end------------------");
 	}
 	

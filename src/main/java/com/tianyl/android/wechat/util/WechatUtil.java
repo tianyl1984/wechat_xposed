@@ -13,16 +13,17 @@ public class WechatUtil {
 	
 	public static String getType(Object obj){
 		if(obj == null){
-			return "null";
+			return "NULL";
 		}
 		return obj.getClass().getName();
 	}
 	
 	public static String getStr(Object obj){
 		if(obj == null){
-			return "null";
+			return "NULL";
 		}
-		if(obj.getClass() == new byte[]{}.getClass()){
+
+		if(obj.getClass().equals(new byte[]{}.getClass())){
 			return encodeHexStr((byte[])obj);
 		}
 		
