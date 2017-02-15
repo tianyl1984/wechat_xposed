@@ -126,7 +126,7 @@ public class UploadService {
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINA).format(date);
 	}
 
-	private static List<File> findJsonFiles() {
+	public static List<File> findJsonFiles() {
 		String parentDir = FileUtil.getBathPath() + "json/";
 		List<File> files = new ArrayList<>();
 		for (File file : new File(parentDir).listFiles()) {
@@ -137,4 +137,27 @@ public class UploadService {
 		return files;
 	}
 
+	public static void uploadDelMsg(){
+        File file = new File(FileUtil.getBathPath() + "sql/delete_message.sql");
+        if(!file.exists()){
+            return;
+        }
+        JSONArray delMsgs = DeleteMessageParse.parse(file);
+        if (sendDelMsgToServer(delMsgs)) {
+            file.renameTo(new File(FileUtil.getBathPath() + "sql/delete_message_" +
+                    new SimpleDateFormat("yyyyMMddHHmm",Locale.CHINA).format(new Date()) + ".sql"));
+        }
+    }
+
+    private static boolean sendDelMsgToServer(JSONArray jsonArray) {
+        String url = "https://tianice.51vip.biz/api/wx/message/addDeleteMessage";
+        String result = NetUtil.post(url, jsonArray.toJSONString());
+        try {
+            JSONObject json = JSONObject.parseObject(result);
+            return json.getBooleanValue("result");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
