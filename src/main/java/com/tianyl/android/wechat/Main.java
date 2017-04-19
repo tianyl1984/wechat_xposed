@@ -2,6 +2,7 @@ package com.tianyl.android.wechat;
 
 import com.tianyl.android.wechat.hook.MessageDeleteHook;
 import com.tianyl.android.wechat.hook.MessageInsertHook;
+import com.tianyl.android.wechat.hook.RevokeHook;
 import com.tianyl.android.wechat.hook.SqlExecuteHook;
 import com.tianyl.android.wechat.util.WechatUtil;
 
@@ -25,8 +26,8 @@ public class Main implements IXposedHookLoadPackage{
 		if(!pkgName.equals(WechatPackageName)){
 			return;
 		}
-//		handleFromJar(lpparam);
-		handle(lpparam);
+		handleFromJar(lpparam);
+//		handle(lpparam);
 	}
 
 	public void handleFromJar(LoadPackageParam lpparam)throws Throwable {
@@ -60,24 +61,27 @@ public class Main implements IXposedHookLoadPackage{
 	}
 
     public void debug(XC_LoadPackage.LoadPackageParam lp){
-        XposedBridge.log("打开微信...debug:" + WechatUtil.getTime());
-        String className = "com.tencent.mmdb.database.SQLiteSession";
-        SqlExecuteHook hooker = new SqlExecuteHook(lp);
-		XposedHelpers.findAndHookMethod(className, lp.classLoader, "execute",
-				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
-		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForChangedRowCount",
-				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
-		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForCursorWindow",
-				String.class, Object[].class, Integer.TYPE, Integer.TYPE, Integer.TYPE, "com.tencent.mm.m.a.b", "com.tencent.mm.m.a.c", hooker);
-		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForCursorWindow",
-				String.class, Object[].class, "com.tencent.mmdb.CursorWindow", Integer.TYPE, Integer.TYPE, Boolean.TYPE, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal",
-				hooker);
-		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForLastInsertedRowId",
-				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
-		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForLong",
-				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
-		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForString",
-				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
+        XposedBridge.log("打开微信...debug revoke:" + WechatUtil.getTime());
+//        String className = "com.tencent.mmdb.database.SQLiteSession";
+//        SqlExecuteHook hooker = new SqlExecuteHook(lp);
+//		XposedHelpers.findAndHookMethod(className, lp.classLoader, "execute",
+//				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
+//		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForChangedRowCount",
+//				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
+//		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForCursorWindow",
+//				String.class, Object[].class, Integer.TYPE, Integer.TYPE, Integer.TYPE, "com.tencent.mm.m.a.b", "com.tencent.mm.m.a.c", hooker);
+//		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForCursorWindow",
+//				String.class, Object[].class, "com.tencent.mmdb.CursorWindow", Integer.TYPE, Integer.TYPE, Boolean.TYPE, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal",
+//				hooker);
+//		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForLastInsertedRowId",
+//				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
+//		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForLong",
+//				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
+//		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForString",
+//				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal", hooker);
+
+        RevokeHook hook = new RevokeHook(lp);
+        hook.hook();
 
 //		XposedHelpers.findAndHookMethod("com.tencent.mm.booter.NotifyReceiver", lp.classLoader, "onReceive", Context.class,Intent.class,new XC_MethodHook() {
 //
