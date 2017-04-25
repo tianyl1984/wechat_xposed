@@ -128,6 +128,9 @@ public class UploadService {
 
 	public static List<File> findJsonFiles() {
 		String parentDir = FileUtil.getBathPath() + "json/";
+        if(!new File(parentDir).exists()){
+            new File(parentDir).mkdirs();
+        }
 		List<File> files = new ArrayList<>();
 		for (File file : new File(parentDir).listFiles()) {
 			if (file.getName().endsWith("json")) {

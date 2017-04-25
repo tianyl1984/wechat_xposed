@@ -55,9 +55,9 @@ public class Main implements IXposedHookLoadPackage{
 				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal",
                 new MessageInsertHook(lp));
         //删除消息
-//        XposedHelpers.findAndHookMethod(className,lp.classLoader,"executeForChangedRowCount",
-//                String.class,Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal",
-//                new MessageDeleteHook(lp));
+        XposedHelpers.findAndHookMethod(className,lp.classLoader,"executeForChangedRowCount",
+                String.class,Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal",
+                new MessageDeleteHook(lp));
 	}
 
     public void debug(XC_LoadPackage.LoadPackageParam lp){
