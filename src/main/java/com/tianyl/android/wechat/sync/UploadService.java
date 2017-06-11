@@ -58,7 +58,7 @@ public class UploadService {
         if (msgs == null || msgs.size() == 0){
             return true;
         }
-		String url = "https://tianice.51vip.biz/api/wx/article/save";
+		String url = "http://tianice.51vip.biz/api/wx/article/save";
 		String result = NetUtil.post(url, JSONArray.toJSONString(msgs));
 		try {
 			JSONObject json = JSONObject.parseObject(result);
@@ -153,7 +153,7 @@ public class UploadService {
     }
 
     private static boolean sendDelMsgToServer(JSONArray jsonArray) {
-        String url = "https://tianice.51vip.biz/api/wx/message/addDeleteMessage";
+        String url = "http://tianice.51vip.biz/api/wx/message/addDeleteMessage";
         String result = NetUtil.post(url, jsonArray.toJSONString());
         try {
             JSONObject json = JSONObject.parseObject(result);

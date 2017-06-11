@@ -50,13 +50,13 @@ public class Main implements IXposedHookLoadPackage{
 		XposedBridge.log("打开微信...:" + WechatUtil.getTime());
 
         //添加消息
-		String className = "com.tencent.mmdb.database.SQLiteSession";
+		String className = "com.tencent.wcdb.database.SQLiteSession";
 		XposedHelpers.findAndHookMethod(className, lp.classLoader, "executeForLastInsertedRowId",
-				String.class, Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal",
+				String.class, Object[].class, Integer.TYPE, "com.tencent.wcdb.support.CancellationSignal",
                 new MessageInsertHook(lp));
         //删除消息
         XposedHelpers.findAndHookMethod(className,lp.classLoader,"executeForChangedRowCount",
-                String.class,Object[].class, Integer.TYPE, "com.tencent.mmdb.support.CancellationSignal",
+                String.class,Object[].class, Integer.TYPE, "com.tencent.wcdb.support.CancellationSignal",
                 new MessageDeleteHook(lp));
 	}
 

@@ -52,7 +52,7 @@ public class MessageInsertHook extends XC_MethodHook{
 		}
 		if(semiXML != null){
 			@SuppressWarnings("unchecked")
-			Map<String, String> contentMap = (Map<String, String>)XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.sdk.platformtools.av",loadPackageParam.classLoader), "LZ", semiXML);
+			Map<String, String> contentMap = (Map<String, String>)XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.sdk.platformtools.av",loadPackageParam.classLoader), "MV", semiXML);
 			if(contentMap != null){
 				JSONObject json = new JSONObject(contentMap);
 				String jsonStr = json.toString();
