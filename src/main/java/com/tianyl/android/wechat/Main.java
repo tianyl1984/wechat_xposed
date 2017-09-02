@@ -36,13 +36,14 @@ public class Main implements IXposedHookLoadPackage{
 		if (!new File(filePath).exists()){
             filePath = String.format("/data/app/%s-%s.apk", curPkg, 2);
             if (!new File(filePath).exists()){
-                XposedBridge.log("Error:在/data/app找不到APK文件:" + curPkg);
+                XposedBridge.log("Error:在/data/app找不到APK文件:" + filePath);
                 return;
             }
         }
 		final PathClassLoader pathClassLoader = new PathClassLoader(filePath, ClassLoader.getSystemClassLoader());
         final Class<?> aClass = Class.forName(curPkg + "." + Main.class.getSimpleName(), true, pathClassLoader);
-        final Method aClassMethod = aClass.getMethod("debug", XC_LoadPackage.LoadPackageParam.class);
+//        final Method aClassMethod = aClass.getMethod("debug", XC_LoadPackage.LoadPackageParam.class);
+        final Method aClassMethod = aClass.getMethod("handle", XC_LoadPackage.LoadPackageParam.class);
         aClassMethod.invoke(aClass.newInstance(), lpparam);		
 	}
 
