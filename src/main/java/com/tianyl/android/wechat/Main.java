@@ -26,8 +26,8 @@ public class Main implements IXposedHookLoadPackage{
 		if(!pkgName.equals(WechatPackageName)){
 			return;
 		}
-//		handleFromJar(lpparam);
-		handle(lpparam);
+		handleFromJar(lpparam);
+//		handle(lpparam);
 	}
 
 	public void handleFromJar(LoadPackageParam lpparam)throws Throwable {
